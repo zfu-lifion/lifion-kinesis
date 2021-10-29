@@ -4,7 +4,21 @@
     "jest/no-conditional-expect": "off",
     "radar/no-identical-functions": "off",
     "unicorn/no-array-callback-reference": "off",
-    "unicorn/no-array-for-each": "off"
+    "unicorn/no-array-for-each": "off",
+    "unicorn/prefer-object-from-entries": "off",
+    "no-secrets/no-secrets": ["error", {
+      "ignoreContent": [
+        "NoSuchLifecycleConfiguration",
+        "Kinesis_20131202.SubscribeToShard",
+        "ProvisionedThroughputExceededException",
+        "InvalidArgumentException",
+        "SubscribeToShardEvent",
+        "NoSuchLifecycleConfiguration",
+        "params.provisionedThroughput.writeCapacityUnits",
+        "eyJmb28iOiJiYXIsIGJhesQFxgoifQ=="
+      ],
+      "ignoreIdentifiers": ["PartitionKey"]
+    }]
   },
   "overrides": [
     {
