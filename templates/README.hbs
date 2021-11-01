@@ -30,13 +30,17 @@ kinesis.startConsumer();
 To take advantage of back-pressure, the client can be piped to a writable stream:
 
 ```js
-const util = require('util');
+const { promisify } = require('util');
 const Kinesis = require('lifion-kinesis');
 const stream = require('stream');
 
-const pipeline = util.promisify(stream.pipeline);
-const kinesis = new Kinesis(/* options */),
-pipeline(
+const asyncPipeline = promisify(stream.pipeline);
+const kinesis = new Kinesis({
+  streamName: 'sample-stream'
+  /* other options from AWS.Kinesis */
+});
+
+asyncPipeline(
   kinesis,
   new stream.Writable({
     objectMode: true,
