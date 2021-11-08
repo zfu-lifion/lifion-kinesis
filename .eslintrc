@@ -13,7 +13,6 @@
         "ProvisionedThroughputExceededException",
         "InvalidArgumentException",
         "SubscribeToShardEvent",
-        "NoSuchLifecycleConfiguration",
         "params.provisionedThroughput.writeCapacityUnits",
         "eyJmb28iOiJiYXIsIGJhesQFxgoifQ=="
       ],
