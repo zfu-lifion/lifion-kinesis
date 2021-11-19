@@ -14,9 +14,12 @@
         "InvalidArgumentException",
         "SubscribeToShardEvent",
         "params.provisionedThroughput.writeCapacityUnits",
-        "eyJmb28iOiJiYXIsIGJhesQFxgoifQ=="
-      ],
-      "ignoreIdentifiers": ["PartitionKey"]
+        "eyJmb28iOiJiYXIsIGJhesQFxgoifQ==",
+        "Qk2rZuty0pO/vptdjx3KZ2hUqVM=",
+        "n0vR6WyiMI1VeNqoISbuIEPoMPM=",
+        "hoKe98qHWTKVJg\\+g8IEsdvvnrLI=",
+        "uM9dgBWF4OGL42Uqbr61Yyt5h58="
+      ]
     }]
   },
   "overrides": [
