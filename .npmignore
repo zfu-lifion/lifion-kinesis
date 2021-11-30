@@ -1,7 +1,0 @@
-*.md
-*.test.js
-/.*
-/coverage
-/templates
-__mocks__
-jsconfig.json

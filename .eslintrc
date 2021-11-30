@@ -1,5 +1,5 @@
 {
-  "extends": "lifion",
+  "extends": "./node_modules/core-commons/shared/eslint.json",
   "rules": {
     "jest/no-conditional-expect": "off",
     "radar/no-identical-functions": "off",
@@ -27,9 +27,7 @@
     },
     {
       "files": ["lib/fan-out-consumer.js"],
-      "rules": {
-        "max-classes-per-file": ["error", 4]
-      }
+      "rules": { "max-classes-per-file": ["error", 4] }
     }
   ]
 }

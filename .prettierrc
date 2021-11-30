@@ -1,6 +1,1 @@
-{
-  "printWidth": 100,
-  "singleQuote": true,
-  "trailingComma": "none",
-  "endOfLine": "auto"
-}
+"./node_modules/core-commons/shared/prettier.json"
