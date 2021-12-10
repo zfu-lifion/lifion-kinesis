@@ -65,6 +65,10 @@
     "short-uuid": "^4.2.0"
   },
   "devDependencies": {
+    "@types/async-retry": "^1.4.3",
+    "@types/aws4": "^1.11.0",
+    "@types/lru-cache": "^5.1.1",
+    "@types/project-name": "^1.0.0",
     "chalk": "^4.1.2",
     "chance": "^1.1.8",
     "core-commons": "^1.0.0-alpha.3",
