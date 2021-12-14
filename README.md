@@ -21,7 +21,7 @@ const kinesis = new Kinesis({
   streamName: 'sample-stream'
   /* other options from AWS.Kinesis */
 });
-kinesis.on('data', data => {
+kinesis.on('data', (data) => {
   console.log('Incoming data:', data);
 });
 kinesis.startConsumer();
@@ -66,27 +66,30 @@ kinesis.startConsumer();
 
 
 * [lifion-kinesis](#module_lifion-kinesis)
-    * [Kinesis](#exp_module_lifion-kinesis--Kinesis) ⇐ [<code>PassThrough</code>](https://nodejs.org/dist/latest-v10.x/docs/api/stream.html#stream_class_stream_passthrough) ⏏
+    * [Kinesis](#exp_module_lifion-kinesis--Kinesis) ⇐ <code>PassThrough</code> ⏏
         * [new Kinesis(options)](#new_module_lifion-kinesis--Kinesis_new)
         * _instance_
-            * [.startConsumer()](#module_lifion-kinesis--Kinesis+startConsumer) ⇒ <code>Promise</code>
+            * [.startConsumer()](#module_lifion-kinesis--Kinesis+startConsumer) ⇒ <code>Promise.&lt;void&gt;</code>
             * [.stopConsumer()](#module_lifion-kinesis--Kinesis+stopConsumer)
-            * [.putRecord(params)](#module_lifion-kinesis--Kinesis+putRecord) ⇒ <code>Promise</code>
-            * [.listShards(params)](#module_lifion-kinesis--Kinesis+listShards) ⇒ <code>Promise</code>
-            * [.putRecords(params)](#module_lifion-kinesis--Kinesis+putRecords) ⇒ <code>Promise</code>
+            * [.putRecord(params)](#module_lifion-kinesis--Kinesis+putRecord) ⇒ <code>Promise.&lt;Object&gt;</code>
+            * [.listShards(params)](#module_lifion-kinesis--Kinesis+listShards) ⇒ <code>Promise.&lt;Object&gt;</code>
+            * [.putRecords(params)](#module_lifion-kinesis--Kinesis+putRecords) ⇒ <code>Promise.&lt;Object&gt;</code>
             * [.getStats()](#module_lifion-kinesis--Kinesis+getStats) ⇒ <code>Object</code>
         * _static_
             * [.getStats()](#module_lifion-kinesis--Kinesis.getStats) ⇒ <code>Object</code>
+        * _inner_
+            * [~parsePutRecordResult(param)](#module_lifion-kinesis--Kinesis..parsePutRecordResult) ⇒ <code>Object.&lt;string, string&gt;</code>
+            * [~parsePutRecordsResult(param)](#module_lifion-kinesis--Kinesis..parsePutRecordsResult) ⇒ <code>Object.&lt;string, any&gt;</code>
 
 <a name="exp_module_lifion-kinesis--Kinesis"></a>
 
-### Kinesis ⇐ [<code>PassThrough</code>](https://nodejs.org/dist/latest-v10.x/docs/api/stream.html#stream_class_stream_passthrough) ⏏
+### Kinesis ⇐ <code>PassThrough</code> ⏏
 A [pass-through stream](https://nodejs.org/dist/latest-v10.x/docs/api/stream.html#stream_class_stream_passthrough) class specialization implementing a consumer
 of Kinesis Data Streams using the [AWS SDK for JavaScript](https://docs.aws.amazon.com/AWSJavaScriptSDK/latest). Incoming
 data can be retrieved through either the `data` event or by piping the instance to other streams.
 
 **Kind**: Exported class  
-**Extends**: [<code>PassThrough</code>](https://nodejs.org/dist/latest-v10.x/docs/api/stream.html#stream_class_stream_passthrough)  
+**Extends**: <code>PassThrough</code>  
 <a name="new_module_lifion-kinesis--Kinesis_new"></a>
 
 #### new Kinesis(options)
@@ -105,10 +108,14 @@ Initializes a new instance of the Kinesis client.
 | [options.encryption] | <code>Object</code> |  | The encryption options to enforce in the stream. |
 | [options.encryption.type] | <code>string</code> |  | The encryption type to use. |
 | [options.encryption.keyId] | <code>string</code> |  | The GUID for the customer-managed AWS KMS key        to use for encryption. This value can be a globally unique identifier, a fully        specified ARN to either an alias or a key, or an alias name prefixed by "alias/". |
+| [options.initialPositionInStream] | <code>string</code> | <code>&quot;LATEST&quot;</code> | The location in the shard from which the Consumer will start         fetching records from when the application starts for the first time and there is no checkpoint for the shard.        Set to LATEST to fetch new data only        Set to TRIM_HORIZON to start from the oldest available data record. |
 | [options.leaseAcquisitionInterval] | <code>number</code> | <code>20000</code> | The interval in milliseconds for how often to        attempt lease acquisitions. |
 | [options.leaseAcquisitionRecoveryInterval] | <code>number</code> | <code>5000</code> | The interval in milliseconds for how often        to re-attempt lease acquisitions when an error is returned from aws. |
 | [options.limit] | <code>number</code> | <code>10000</code> | The limit of records per get records call (only        applicable with `useEnhancedFanOut` is set to `false`) |
 | [options.logger] | <code>Object</code> |  | An object with the `warn`, `debug`, and `error` functions        that will be used for logging purposes. If not provided, logging will be omitted. |
+| [options.logger.debug] | <code>function</code> |  | Logger debug message. |
+| [options.logger.error] | <code>function</code> |  | Logger error message. |
+| [options.logger.warn] | <code>function</code> |  | Logger warn message. |
 | [options.maxEnhancedConsumers] | <code>number</code> | <code>5</code> | An option to set the number of enhanced        fan-out consumer ARNs that the module should initialize. Defaults to 5.        Providing a number above the AWS limit (20) or below 1 will result in using the default. |
 | [options.noRecordsPollDelay] | <code>number</code> | <code>1000</code> | The delay in milliseconds before        attempting to get more records when there were none in the previous attempt (only        applicable when `useEnhancedFanOut` is set to `false`) |
 | [options.pollDelay] | <code>number</code> | <code>250</code> | When the `usePausedPolling` option is `false`, this        option defines the delay in milliseconds in between poll requests for more records        (only applicable when `useEnhancedFanOut` is set to `false`) |
@@ -118,10 +125,10 @@ Initializes a new instance of the Kinesis client.
 | [options.s3.nonS3Keys] | <code>Array.&lt;string&gt;</code> | <code>[]</code> | If the `useS3ForLargeItems` option is set to        `true`, the `nonS3Keys` option lists the keys that will be sent normally on the kinesis record. |
 | [options.s3.tags] | <code>string</code> |  | If provided, the client will ensure that the        S3 bucket is tagged with these tags. If the bucket already has tags, they will be merged. |
 | [options.shardCount] | <code>number</code> | <code>1</code> | The number of shards that the newly-created stream        will use (if the `createStreamIfNeeded` option is set) |
-| [options.shouldDeaggregate] | <code>string</code> \| <code>boolean</code> | <code>&quot;auto&quot;</code> | Whethe the method retrieving the records             should expect aggregated records and deaggregate them appropriately. |
+| [options.shouldDeaggregate] | <code>string</code> \| <code>boolean</code> | <code>&quot;auto&quot;</code> | Whether the method retrieving the records             should expect aggregated records and deaggregate them appropriately. |
 | [options.shouldParseJson] | <code>string</code> \| <code>boolean</code> | <code>&quot;auto&quot;</code> | Whether if retrieved records' data should be parsed as JSON or not.        Set to "auto" to only attempt parsing if data looks like JSON. Set to true to force data parse. |
 | [options.statsInterval] | <code>number</code> | <code>30000</code> | The interval in milliseconds for how often to        emit the "stats" event. The event is only available while the consumer is running. |
-| options.streamName | <code>string</code> |  | The name of the stream to consume data from (required) |
+| [options.streamName] | <code>string</code> |  | The name of the stream to consume data from (required) |
 | [options.supressThroughputWarnings] | <code>boolean</code> | <code>false</code> | Set to `true` to make the client        log ProvisionedThroughputExceededException as debug rather than warning. |
 | [options.tags] | <code>Object</code> |  | If provided, the client will ensure that the stream is tagged        with these tags upon connection. If the stream is already tagged, the existing tags        will be merged with the provided ones before updating them. |
 | [options.useAutoCheckpoints] | <code>boolean</code> | <code>true</code> | Set to `true` to make the client        automatically store shard checkpoints using the sequence number of the most-recently        received record. If set to `false` consumers can use the `setCheckpoint()` function to        store any sequence number as the checkpoint for the shard. |
@@ -132,7 +139,7 @@ Initializes a new instance of the Kinesis client.
 
 <a name="module_lifion-kinesis--Kinesis+startConsumer"></a>
 
-#### kinesis.startConsumer() ⇒ <code>Promise</code>
+#### kinesis.startConsumer() ⇒ <code>Promise.&lt;void&gt;</code>
 Starts the stream consumer, by ensuring that the stream exists, that it's ready, and
 configured as requested. The internal managers that deal with heartbeats, state, and
 consumers will also be started.
@@ -148,7 +155,7 @@ Stops the stream consumer. The internal managers will also be stopped.
 **Kind**: instance method of [<code>Kinesis</code>](#exp_module_lifion-kinesis--Kinesis)  
 <a name="module_lifion-kinesis--Kinesis+putRecord"></a>
 
-#### kinesis.putRecord(params) ⇒ <code>Promise</code>
+#### kinesis.putRecord(params) ⇒ <code>Promise.&lt;Object&gt;</code>
 Writes a single data record into a stream.
 
 **Kind**: instance method of [<code>Kinesis</code>](#exp_module_lifion-kinesis--Kinesis)  
@@ -158,7 +165,7 @@ Writes a single data record into a stream.
 | Param | Type | Description |
 | --- | --- | --- |
 | params | <code>Object</code> | The parameters. |
-| params.data | <code>\*</code> | The data to put into the record. |
+| [params.data] | <code>\*</code> | The data to put into the record. |
 | [params.explicitHashKey] | <code>string</code> | The hash value used to explicitly determine the        shard the data record is assigned to by overriding the partition key hash. |
 | [params.partitionKey] | <code>string</code> | Determines which shard in the stream the data record        is assigned to. If omitted, it will be calculated based on a SHA-1 hash of the data. |
 | [params.sequenceNumberForOrdering] | <code>string</code> | Set this to the sequence number obtained        from the last put record operation to guarantee strictly increasing sequence numbers,        for puts from the same client and to the same partition key. If omitted, records are        coarsely ordered based on arrival time. |
@@ -166,7 +173,7 @@ Writes a single data record into a stream.
 
 <a name="module_lifion-kinesis--Kinesis+listShards"></a>
 
-#### kinesis.listShards(params) ⇒ <code>Promise</code>
+#### kinesis.listShards(params) ⇒ <code>Promise.&lt;Object&gt;</code>
 List the shards of a stream.
 
 **Kind**: instance method of [<code>Kinesis</code>](#exp_module_lifion-kinesis--Kinesis)  
@@ -180,7 +187,7 @@ List the shards of a stream.
 
 <a name="module_lifion-kinesis--Kinesis+putRecords"></a>
 
-#### kinesis.putRecords(params) ⇒ <code>Promise</code>
+#### kinesis.putRecords(params) ⇒ <code>Promise.&lt;Object&gt;</code>
 Writes multiple data records into a stream in a single call.
 
 **Kind**: instance method of [<code>Kinesis</code>](#exp_module_lifion-kinesis--Kinesis)  
@@ -190,8 +197,8 @@ Writes multiple data records into a stream in a single call.
 | Param | Type | Description |
 | --- | --- | --- |
 | params | <code>Object</code> | The parameters. |
-| params.records | <code>Array.&lt;Object&gt;</code> | The records associated with the request. |
-| params.records[].data | <code>\*</code> | The record data. |
+| [params.records] | <code>Array.&lt;Object&gt;</code> | The records associated with the request. |
+| [params.records[].data] | <code>\*</code> | The record data. |
 | [params.records[].explicitHashKey] | <code>string</code> | The hash value used to explicitly        determine the shard the data record is assigned to by overriding the partition key hash. |
 | [params.records[].partitionKey] | <code>string</code> | Determines which shard in the stream the        data record is assigned to. If omitted, it will be calculated based on a SHA-1 hash        of the data. |
 | [params.streamName] | <code>string</code> | If provided, the record will be put into the specified        stream instead of the stream name provided during the consumer instantiation. |
@@ -210,7 +217,29 @@ Returns the aggregated statistics of all the instances of the client.
 
 **Kind**: static method of [<code>Kinesis</code>](#exp_module_lifion-kinesis--Kinesis)  
 **Returns**: <code>Object</code> - An object with the statistics.  
+<a name="module_lifion-kinesis--Kinesis..parsePutRecordResult"></a>
+
+#### Kinesis~parsePutRecordResult(param) ⇒ <code>Object.&lt;string, string&gt;</code>
+Parses the output of the putRecord operation
+
+**Kind**: inner method of [<code>Kinesis</code>](#exp_module_lifion-kinesis--Kinesis)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| param | <code>Object.&lt;string, string&gt;</code> | Output for the put record operation. |
+
+<a name="module_lifion-kinesis--Kinesis..parsePutRecordsResult"></a>
+
+#### Kinesis~parsePutRecordsResult(param) ⇒ <code>Object.&lt;string, any&gt;</code>
+Parses the output of the putRecords operation
+
+**Kind**: inner method of [<code>Kinesis</code>](#exp_module_lifion-kinesis--Kinesis)  
+
+| Param | Type | Description |
+| --- | --- | --- |
+| param | <code>Object.&lt;string, any&gt;</code> | Output for the put records operation. |
+
 
 ## License
 
-[MIT](./LICENSE)
+[Apache-2.0](./LICENSE)
