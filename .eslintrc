@@ -5,26 +5,29 @@
     "radar/no-identical-functions": "off",
     "unicorn/no-array-callback-reference": "off",
     "unicorn/no-array-for-each": "off",
-    "no-secrets/no-secrets": ["error", {
-      "ignoreContent": [
-        "NoSuchLifecycleConfiguration",
-        "Kinesis_20131202.SubscribeToShard",
-        "ProvisionedThroughputExceededException",
-        "InvalidArgumentException",
-        "SubscribeToShardEvent",
-        "params.provisionedThroughput.writeCapacityUnits",
-        "eyJmb28iOiJiYXIsIGJhesQFxgoifQ==",
-        "Qk2rZuty0pO/vptdjx3KZ2hUqVM=",
-        "n0vR6WyiMI1VeNqoISbuIEPoMPM=",
-        "hoKe98qHWTKVJg\\+g8IEsdvvnrLI=",
-        "uM9dgBWF4OGL42Uqbr61Yyt5h58=",
-        "{Promise<DynamoDB.DescribeTableOutput>}",
-        "{Promise<DynamoDB.ListTagsOfResourceOutput>}",
-        "{Promise<DynamoDB.DescribeTableOutput>}",
-        "{Promise<void|Promise<S3.CreateBucketOutput>>}",
-        "{Promise<S3.GetBucketLifecycleConfigurationOutput>}"
-      ]
-    }]
+    "no-secrets/no-secrets": [
+      "error",
+      {
+        "ignoreContent": [
+          "NoSuchLifecycleConfiguration",
+          "Kinesis_20131202.SubscribeToShard",
+          "ProvisionedThroughputExceededException",
+          "InvalidArgumentException",
+          "SubscribeToShardEvent",
+          "params.provisionedThroughput.writeCapacityUnits",
+          "eyJmb28iOiJiYXIsIGJhesQFxgoifQ==",
+          "Qk2rZuty0pO/vptdjx3KZ2hUqVM=",
+          "n0vR6WyiMI1VeNqoISbuIEPoMPM=",
+          "hoKe98qHWTKVJg\\+g8IEsdvvnrLI=",
+          "uM9dgBWF4OGL42Uqbr61Yyt5h58=",
+          "{Promise<DynamoDB.DescribeTableOutput>}",
+          "{Promise<DynamoDB.ListTagsOfResourceOutput>}",
+          "{Promise<DynamoDB.DescribeTableOutput>}",
+          "{Promise<void|Promise<S3.CreateBucketOutput>>}",
+          "{Promise<S3.GetBucketLifecycleConfigurationOutput>}"
+        ]
+      }
+    ]
   },
   "overrides": [
     {
