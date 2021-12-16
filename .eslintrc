@@ -51,6 +51,10 @@
     {
       "files": ["lib/fan-out-consumer.js"],
       "rules": { "max-classes-per-file": ["error", 4] }
+    },
+    {
+      "files": ["lib/kinesis-client.js"],
+      "rules": { "promise/no-nesting": "off" }
     }
   ]
 }
